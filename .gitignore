@@ -1,0 +1,17 @@
+documind_ai/.dart_tool/
+documind_ai/build/
+documind_ai/.flutter-plugins
+documind_ai/.flutter-plugins-dependencies
+documind_ai/android/.gradle/
+documind_ai/android/local.properties
+documind_ai/android/key.properties
+documind_ai/android/app/google-services.json
+documind_ai/**/*.jks
+documind_ai/**/*.keystore
+documind_ai/ios/Pods/
+documind_ai/ios/.symlinks/
+documind_ai/pubspec.lock
+*.env
+*.log
+.DS_Store
+Thumbs.db

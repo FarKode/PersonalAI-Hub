@@ -1,0 +1,161 @@
+{
+  "_note1": "KEEP THIS FILE! Check it into a version control system (VCS) like git.",
+  "_note2": "ObjectBox manages crucial IDs for your object model. See docs for details.",
+  "_note3": "If you have VCS merge conflicts, you must resolve them according to ObjectBox docs.",
+  "entities": [
+    {
+      "id": "1:7393362435309882679",
+      "lastPropertyId": "4:5820799283109081396",
+      "name": "IsarChunk",
+      "properties": [
+        {
+          "id": "1:8055524599437241377",
+          "name": "id",
+          "type": 6,
+          "flags": 1
+        },
+        {
+          "id": "2:3229320536858231276",
+          "name": "docId",
+          "indexId": "1:5945145856801249738",
+          "type": 6,
+          "flags": 8
+        },
+        {
+          "id": "3:9173768353573935062",
+          "name": "chunkText",
+          "type": 9
+        },
+        {
+          "id": "4:5820799283109081396",
+          "name": "chunkVector",
+          "indexId": "2:7534749869295989484",
+          "type": 28,
+          "flags": 8
+        }
+      ],
+      "relations": []
+    },
+    {
+      "id": "2:300154422845590284",
+      "lastPropertyId": "4:3857920786029271033",
+      "name": "IsarDocument",
+      "properties": [
+        {
+          "id": "1:671837981270546382",
+          "name": "id",
+          "type": 6,
+          "flags": 1
+        },
+        {
+          "id": "2:5006569386958696108",
+          "name": "fileName",
+          "type": 9
+        },
+        {
+          "id": "3:8277877743548274701",
+          "name": "filePath",
+          "type": 9
+        },
+        {
+          "id": "4:3857920786029271033",
+          "name": "createdAt",
+          "type": 10
+        }
+      ],
+      "relations": []
+    },
+    {
+      "id": "3:4628304068115018924",
+      "lastPropertyId": "5:454225009785019217",
+      "name": "AgentMessage",
+      "properties": [
+        {
+          "id": "1:7178741696237399183",
+          "name": "id",
+          "type": 6,
+          "flags": 1
+        },
+        {
+          "id": "2:5152858179064754666",
+          "name": "role",
+          "type": 9
+        },
+        {
+          "id": "3:4713148633818875281",
+          "name": "text",
+          "type": 9
+        },
+        {
+          "id": "4:2921825090262286210",
+          "name": "createdAt",
+          "type": 10
+        },
+        {
+          "id": "5:454225009785019217",
+          "name": "sessionId",
+          "indexId": "3:4861661707765533784",
+          "type": 11,
+          "flags": 520,
+          "relationTarget": "AgentSession"
+        }
+      ],
+      "relations": []
+    },
+    {
+      "id": "4:8404905154945929728",
+      "lastPropertyId": "7:193308306984325435",
+      "name": "AgentSession",
+      "properties": [
+        {
+          "id": "1:1661193524083871441",
+          "name": "id",
+          "type": 6,
+          "flags": 1
+        },
+        {
+          "id": "2:6595368305023697912",
+          "name": "agentType",
+          "type": 9
+        },
+        {
+          "id": "3:5036546111768919035",
+          "name": "title",
+          "type": 9
+        },
+        {
+          "id": "4:1277739398577420041",
+          "name": "relatedDocId",
+          "type": 6
+        },
+        {
+          "id": "5:3846771886876106909",
+          "name": "createdAt",
+          "type": 10
+        },
+        {
+          "id": "6:5691253640660306288",
+          "name": "updatedAt",
+          "type": 10
+        },
+        {
+          "id": "7:193308306984325435",
+          "name": "isPinned",
+          "type": 1
+        }
+      ],
+      "relations": []
+    }
+  ],
+  "lastEntityId": "4:8404905154945929728",
+  "lastIndexId": "3:4861661707765533784",
+  "lastRelationId": "0:0",
+  "lastSequenceId": "0:0",
+  "modelVersion": 5,
+  "modelVersionParserMinimum": 5,
+  "retiredEntityUids": [],
+  "retiredIndexUids": [],
+  "retiredPropertyUids": [],
+  "retiredRelationUids": [],
+  "version": 1
+}

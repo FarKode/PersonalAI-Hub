@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>API Setup Guide | DocuMind AI</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+        body {
+            margin: 0;
+            padding: 0;
+            background-color: #050505;
+            color: #e0e0e0;
+            font-family: 'Inter', sans-serif;
+            line-height: 1.6;
+        }
+        .container {
+            max-width: 800px;
+            margin: 40px auto;
+            padding: 40px;
+            background: rgba(18, 18, 18, 0.8);
+            border-radius: 20px;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            box-shadow: 0 0 30px rgba(213, 0, 249, 0.05);
+        }
+        h1 {
+            font-size: 2.5rem;
+            background: linear-gradient(90deg, #2979FF, #D500F9);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 10px;
+        }
+        h2 {
+            color: #ffffff;
+            font-size: 1.5rem;
+            margin-top: 30px;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+            padding-bottom: 10px;
+        }
+        h3 {
+            color: #D500F9;
+            font-size: 1.2rem;
+            margin-top: 20px;
+        }
+        p, li {
+            color: #b0b0b0;
+            font-size: 1rem;
+            margin-bottom: 15px;
+        }
+        ul {
+            padding-left: 20px;
+        }
+        .step {
+            background: rgba(41, 121, 255, 0.05);
+            border-left: 3px solid #2979FF;
+            padding: 15px;
+            margin: 10px 0;
+            border-radius: 5px;
+        }
+        a {
+            color: #2979FF;
+            text-decoration: none;
+            font-weight: 500;
+        }
+        a:hover {
+            text-decoration: underline;
+        }
+        .badge {
+            display: inline-block;
+            background: linear-gradient(90deg, #2979FF, #D500F9);
+            color: white;
+            padding: 4px 10px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: bold;
+            margin-left: 10px;
+        }
+        .footer {
+            text-align: center;
+            margin-top: 50px;
+            font-size: 0.9rem;
+            color: #606060;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>API Setup Guide</h1>
+        <p>DocuMind AI operates on a BYOK (Bring Your Own Key) model. This means you use your own API keys to power the AI. This gives you 100% privacy, no hidden fees, and unlimited potential.</p>
+        <p>Below is a guide on how to get API keys. We highly recommend <strong>Groq</strong> for free, lightning-fast usage.</p>
+
+        <h2>1. Groq (Recommended) <span class="badge">FREE & FAST</span></h2>
+        <p>Groq offers an incredibly fast API and has a generous free tier. It uses open-source models like Llama-3.</p>
+        <div class="step"><strong>Step 1:</strong> Visit <a href="https://console.groq.com/keys" target="_blank">Groq Console</a> and sign up.</div>
+        <div class="step"><strong>Step 2:</strong> Navigate to "API Keys" on the left sidebar.</div>
+        <div class="step"><strong>Step 3:</strong> Click "Create API Key". Copy the generated key.</div>
+        <div class="step"><strong>Step 4:</strong> Open DocuMind AI -> Settings -> Select "Groq" -> Paste your key.</div>
+
+        <h2>2. Google Gemini</h2>
+        <p>Google offers a free tier for Gemini API usage through Google AI Studio.</p>
+        <div class="step"><strong>Step 1:</strong> Go to <a href="https://aistudio.google.com/app/apikey" target="_blank">Google AI Studio</a>.</div>
+        <div class="step"><strong>Step 2:</strong> Sign in with your Google account and click "Create API Key".</div>
+        <div class="step"><strong>Step 3:</strong> Copy the key and paste it into DocuMind AI under the "Gemini" provider.</div>
+
+        <h2>3. OpenAI (ChatGPT)</h2>
+        <p>For professional use, OpenAI's GPT-4o models are available, but require adding a billing method.</p>
+        <div class="step"><strong>Step 1:</strong> Visit <a href="https://platform.openai.com/api-keys" target="_blank">OpenAI Platform</a>.</div>
+        <div class="step"><strong>Step 2:</strong> Log in and go to "API Keys".</div>
+        <div class="step"><strong>Step 3:</strong> Create a new secret key and copy it.</div>
+        <div class="step"><strong>Step 4:</strong> Paste it into DocuMind AI under the "OpenAI" provider.</div>
+
+        <h2>4. Anthropic (Claude)</h2>
+        <p>Claude models are excellent for large documents and coding. Requires billing setup.</p>
+        <div class="step"><strong>Step 1:</strong> Visit <a href="https://console.anthropic.com/settings/keys" target="_blank">Anthropic Console</a>.</div>
+        <div class="step"><strong>Step 2:</strong> Create an account and navigate to API Keys.</div>
+        <div class="step"><strong>Step 3:</strong> Create Key, copy it, and paste it into DocuMind AI under "Anthropic".</div>
+
+        <h2>Need Help?</h2>
+        <p>If you face any issues setting up your API key, feel free to reach out. Remember, your API usage depends on the provider's pricing, but DocuMind AI does not charge you per request.</p>
+        
+        <div class="footer">
+            &copy; 2024 DocuMind AI. Empowering your privacy.
+        </div>
+    </div>
+</body>
+</html>
