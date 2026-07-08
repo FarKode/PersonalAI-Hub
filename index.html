@@ -527,10 +527,10 @@
         }
         coreGeo.setAttribute('color', new THREE.BufferAttribute(coreColors, 3));
         const coreMat = new THREE.PointsMaterial({
-            size: 0.08,
+            size: 0.1,
             vertexColors: true,
             transparent: true,
-            opacity: 0.85,
+            opacity: 0.9,
             blending: THREE.AdditiveBlending
         });
         const corePoints = new THREE.Points(coreGeo, coreMat);
@@ -542,7 +542,7 @@
             color: 0xD500F9, // Neon Purple
             wireframe: true,
             transparent: true,
-            opacity: 0.15,
+            opacity: 0.2,
             blending: THREE.AdditiveBlending
         });
         const shieldMesh = new THREE.Mesh(shieldGeo, shieldMat);
@@ -551,9 +551,9 @@
         // Secondary shell of points on the shield for a premium dotted shield look
         const shieldPointsMat = new THREE.PointsMaterial({
             color: 0xD500F9,
-            size: 0.06,
+            size: 0.08,
             transparent: true,
-            opacity: 0.4
+            opacity: 0.5
         });
         const shieldPoints = new THREE.Points(shieldGeo, shieldPointsMat);
         vaultGroup.add(shieldPoints);
@@ -573,7 +573,7 @@
             const orbitMat = new THREE.MeshBasicMaterial({
                 color: agent.color,
                 transparent: true,
-                opacity: 0.06,
+                opacity: 0.08,
                 side: THREE.DoubleSide
             });
             const orbit = new THREE.Mesh(orbitGeo, orbitMat);
@@ -582,22 +582,22 @@
             vaultGroup.add(orbit);
 
             // Agent Node (Satellite)
-            const nodeGeo = new THREE.SphereGeometry(0.2, 16, 16);
+            const nodeGeo = new THREE.SphereGeometry(0.22, 16, 16);
             const nodeMat = new THREE.MeshBasicMaterial({
                 color: agent.color,
                 transparent: true,
-                opacity: 0.9,
+                opacity: 0.95,
                 blending: THREE.AdditiveBlending
             });
             const nodeMesh = new THREE.Mesh(nodeGeo, nodeMat);
             vaultGroup.add(nodeMesh);
 
             // Node Glow Ring
-            const glowGeo = new THREE.RingGeometry(0.3, 0.4, 16);
+            const glowGeo = new THREE.RingGeometry(0.3, 0.45, 16);
             const glowMat = new THREE.MeshBasicMaterial({
                 color: agent.color,
                 transparent: true,
-                opacity: 0.4,
+                opacity: 0.5,
                 side: THREE.DoubleSide
             });
             const glowMesh = new THREE.Mesh(glowGeo, glowMat);
@@ -616,7 +616,7 @@
         const lineMat = new THREE.LineBasicMaterial({
             color: 0x2979FF,
             transparent: true,
-            opacity: 0.15
+            opacity: 0.2
         });
 
         const lineGeometries = [];
@@ -629,58 +629,73 @@
         });
 
         // 5. Ambient Light
-        const ambientLight = new THREE.AmbientLight(0xffffff, 0.2);
+        const ambientLight = new THREE.AmbientLight(0xffffff, 0.3);
         scene.add(ambientLight);
 
-        // 6. Global Background Stars (Floating Dust Constellation)
+        // 6. Highly Prominent Global Background Stars (Floating Neon Constellation)
         const starsGeo = new THREE.BufferGeometry();
-        const starsCount = 1200;
+        const starsCount = 1500;
         const starPositions = new Float32Array(starsCount * 3);
+        const starColors = new Float32Array(starsCount * 3);
         const starSpeeds = new Float32Array(starsCount);
 
+        const color1 = new THREE.Color('#2979FF'); // Electric Blue
+        const color2 = new THREE.Color('#D500F9'); // Neon Purple
+
         for (let i = 0; i < starsCount * 3; i += 3) {
-            starPositions[i] = (Math.random() - 0.5) * 50;     // X
-            starPositions[i + 1] = (Math.random() - 0.5) * 50; // Y
-            starPositions[i + 2] = (Math.random() - 0.5) * 20 - 5; // Z
-            starSpeeds[i / 3] = 0.02 + Math.random() * 0.05;
+            starPositions[i] = (Math.random() - 0.5) * 60;     // X
+            starPositions[i + 1] = (Math.random() - 0.5) * 60; // Y
+            starPositions[i + 2] = (Math.random() - 0.5) * 30 - 10; // Z
+            starSpeeds[i / 3] = 0.01 + Math.random() * 0.03;
+
+            const chosenColor = Math.random() > 0.5 ? color1 : color2;
+            chosenColor.toArray(starColors, i);
         }
 
         starsGeo.setAttribute('position', new THREE.BufferAttribute(starPositions, 3));
+        starsGeo.setAttribute('color', new THREE.BufferAttribute(starColors, 3));
+
         const starsMat = new THREE.PointsMaterial({
-            color: 0x2979FF,
-            size: 0.05,
+            size: 0.15,
+            vertexColors: true,
             transparent: true,
-            opacity: 0.4,
+            opacity: 0.7,
             blending: THREE.AdditiveBlending
         });
         const starsPoints = new THREE.Points(starsGeo, starsMat);
         scene.add(starsPoints);
 
-        // Projecting screen placeholder into 3D Space Coordinates
+        // Vault Position Interpolation Logic
+        let vaultTargetPos = new THREE.Vector3(3.5, 0, 0);
+        let vaultCurrentPos = new THREE.Vector3(3.5, 0, 0);
+
         function updateVaultPosition() {
             if (!container) return;
             const rect = container.getBoundingClientRect();
             
-            // Map the screen center of the hero-visual placeholder into NDC
-            const ndcX = ((rect.left + rect.width / 2) / window.innerWidth) * 2 - 1;
-            const ndcY = -((rect.top + rect.height / 2) / window.innerHeight) * 2 + 1;
+            // If container is scrolled off the top, smoothly float the vault in the viewport corner
+            if (rect.bottom < 100) {
+                const floatX = window.innerWidth > 768 ? 4 : 0;
+                const floatY = camera.position.y - 1.5;
+                const floatZ = -1.5;
+                vaultTargetPos.set(floatX, floatY, floatZ);
+            } else {
+                const ndcX = ((rect.left + rect.width / 2) / window.innerWidth) * 2 - 1;
+                const ndcY = -((rect.top + rect.height / 2) / window.innerHeight) * 2 + 1;
 
-            // Project coordinate back into 3D space
-            const vector = new THREE.Vector3(ndcX, ndcY, 0.5);
-            vector.unproject(camera);
-            const dir = vector.sub(camera.position).normalize();
-            const distance = -camera.position.z / dir.z;
-            const pos = camera.position.clone().add(dir.multiplyScalar(distance));
+                const vector = new THREE.Vector3(ndcX, ndcY, 0.5);
+                vector.unproject(camera);
+                const dir = vector.sub(camera.position).normalize();
+                const distance = -camera.position.z / dir.z;
+                const pos = camera.position.clone().add(dir.multiplyScalar(distance));
+                
+                vaultTargetPos.copy(pos);
+            }
 
-            // Smoothly move the 3D Vault to line up with the layout placeholder
-            vaultGroup.position.copy(pos);
-
-            // Scale vaultGroup slightly on smaller viewports
-            const scale = Math.min(window.innerWidth / 1200, 1) * 0.9 + 0.1;
+            const scale = Math.min(window.innerWidth / 1200, 1) * 0.8 + 0.2;
             vaultGroup.scale.set(scale, scale, scale);
         }
 
-        // Initialize vault position alignment
         updateVaultPosition();
 
         // Parallax Interaction State
@@ -696,8 +711,7 @@
 
         // 3D Parallax camera panning on scroll
         window.addEventListener('scroll', () => {
-            // Move camera on Y axis as user scrolls
-            camera.position.y = -window.scrollY * 0.012;
+            camera.position.y = -window.scrollY * 0.015;
             updateVaultPosition();
         });
 
@@ -709,6 +723,10 @@
 
             const elapsedTime = clock.getElapsedTime();
 
+            // Smoothly interpolate vault position (Lerp)
+            vaultCurrentPos.lerp(vaultTargetPos, 0.08);
+            vaultGroup.position.copy(vaultCurrentPos);
+
             // Rotate core and shield
             corePoints.rotation.y = elapsedTime * 0.05;
             corePoints.rotation.x = elapsedTime * 0.02;
@@ -718,7 +736,7 @@
             shieldPoints.rotation.y = -elapsedTime * 0.03;
             shieldPoints.rotation.z = elapsedTime * 0.015;
 
-            // Animate orbiting satellites (Agents) and update connection pathways
+            // Animate orbiting satellites
             agentMeshes.forEach((agent, index) => {
                 agent.angle += agent.speed;
                 const x = Math.cos(agent.angle) * agent.radius;
@@ -738,10 +756,9 @@
             // Gentle background star drift
             const starsPositionsAttr = starsGeo.attributes.position.array;
             for(let i = 0; i < starsCount; i++) {
-                // Drift X-Y slightly
                 starsPositionsAttr[i * 3 + 1] -= starSpeeds[i] * 0.05;
-                if(starsPositionsAttr[i * 3 + 1] < -25) {
-                    starsPositionsAttr[i * 3 + 1] = 25;
+                if(starsPositionsAttr[i * 3 + 1] < -30) {
+                    starsPositionsAttr[i * 3 + 1] = 30;
                 }
             }
             starsGeo.attributes.position.needsUpdate = true;
@@ -753,16 +770,14 @@
             vaultGroup.rotation.y = currentX * 0.5;
             vaultGroup.rotation.x = currentY * 0.5;
 
-            // Rotate background stars group in opposite direction for depth
-            starsPoints.rotation.y = -currentX * 0.15;
-            starsPoints.rotation.x = -currentY * 0.15;
+            starsPoints.rotation.y = -currentX * 0.2;
+            starsPoints.rotation.x = -currentY * 0.2;
 
             renderer.render(scene, camera);
         };
 
         animate();
 
-        // Responsive Resizing
         window.addEventListener('resize', () => {
             camera.aspect = window.innerWidth / window.innerHeight;
             camera.updateProjectionMatrix();
@@ -771,8 +786,23 @@
             updateVaultPosition();
         });
 
-        // --- Card 3D Tilt Hover Effect ---
+        // --- Card 3D Tilt Hover & Dynamic Glare Effect ---
         document.querySelectorAll('.card').forEach(card => {
+            const glare = document.createElement('div');
+            glare.style.position = 'absolute';
+            glare.style.top = '0';
+            glare.style.left = '0';
+            glare.style.width = '100%';
+            glare.style.height = '100%';
+            glare.style.borderRadius = '24px';
+            glare.style.pointerEvents = 'none';
+            glare.style.background = 'radial-gradient(circle at 50% 50%, rgba(255, 255, 255, 0.08) 0%, transparent 60%)';
+            glare.style.opacity = '0';
+            glare.style.transition = 'opacity 0.3s ease';
+            glare.style.zIndex = '1';
+            card.style.position = 'relative';
+            card.appendChild(glare);
+
             card.addEventListener('mousemove', (e) => {
                 const rect = card.getBoundingClientRect();
                 const x = e.clientX - rect.left;
@@ -780,26 +810,29 @@
                 const xc = rect.width / 2;
                 const yc = rect.height / 2;
                 
-                // Tilt rotation values (-10 to 10 degrees)
-                const rotateX = (yc - y) / 10;
-                const rotateY = (x - xc) / 10;
+                const rotateX = (yc - y) / 8;
+                const rotateY = (x - xc) / 8;
                 
-                card.style.transform = `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) scale3d(1.02, 1.02, 1.02)`;
-                card.style.borderColor = 'rgba(41, 121, 255, 0.35)';
-                card.style.boxShadow = '0 20px 40px rgba(0, 0, 0, 0.4), 0 0 25px rgba(41, 121, 255, 0.1)';
+                card.style.transform = `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) scale3d(1.03, 1.03, 1.03)`;
+                card.style.borderColor = 'rgba(41, 121, 255, 0.4)';
+                card.style.boxShadow = '0 25px 50px rgba(0, 0, 0, 0.5), 0 0 30px rgba(41, 121, 255, 0.15)';
                 
-                // Lift internal components in 3D perspective
-                card.querySelector('.card-icon').style.transform = 'translateZ(30px)';
-                card.querySelector('h3').style.transform = 'translateZ(20px)';
-                card.querySelector('p').style.transform = 'translateZ(10px)';
+                glare.style.opacity = '1';
+                const px = (x / rect.width) * 100;
+                const py = (y / rect.height) * 100;
+                glare.style.background = `radial-gradient(circle at ${px}% ${py}%, rgba(255, 255, 255, 0.12) 0%, transparent 60%)`;
+
+                card.querySelector('.card-icon').style.transform = 'translateZ(40px)';
+                card.querySelector('h3').style.transform = 'translateZ(25px)';
+                card.querySelector('p').style.transform = 'translateZ(15px)';
             });
             
             card.addEventListener('mouseleave', () => {
                 card.style.transform = 'perspective(1000px) rotateX(0deg) rotateY(0deg) scale3d(1, 1, 1)';
                 card.style.borderColor = 'var(--border-color)';
                 card.style.boxShadow = 'none';
+                glare.style.opacity = '0';
                 
-                // Reset internal components
                 card.querySelector('.card-icon').style.transform = 'translateZ(0px)';
                 card.querySelector('h3').style.transform = 'translateZ(0px)';
                 card.querySelector('p').style.transform = 'translateZ(0px)';
