@@ -1,0 +1,459 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PersonalAI Hub - Privacy-First BYOK AI Agent Suite</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap');
+        
+        :root {
+            --bg-color: #050505;
+            --card-bg: rgba(18, 18, 18, 0.7);
+            --electric-blue: #2979FF;
+            --neon-purple: #D500F9;
+            --text-primary: #ffffff;
+            --text-secondary: #a0a0a0;
+            --border-color: rgba(255, 255, 255, 0.05);
+            --gradient-primary: linear-gradient(135deg, var(--electric-blue), var(--neon-purple));
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-primary);
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            overflow-x: hidden;
+            line-height: 1.6;
+        }
+
+        /* Glowing background blobs */
+        .blob {
+            position: absolute;
+            width: 500px;
+            height: 500px;
+            border-radius: 50%;
+            background: radial-gradient(circle, rgba(41, 121, 255, 0.08) 0%, rgba(213, 0, 249, 0.03) 70%, transparent 100%);
+            filter: blur(80px);
+            z-index: -1;
+            pointer-events: none;
+        }
+        
+        .blob-1 { top: -100px; left: -100px; }
+        .blob-2 { top: 600px; right: -150px; }
+        .blob-3 { bottom: -100px; left: 10%; }
+
+        header {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 24px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-family: 'Outfit', sans-serif;
+            font-size: 1.5rem;
+            font-weight: 800;
+            background: var(--gradient-primary);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .logo-symbol {
+            width: 28px;
+            height: 28px;
+            background: var(--gradient-primary);
+            border-radius: 8px;
+            display: inline-block;
+            box-shadow: 0 0 15px rgba(41, 121, 255, 0.4);
+        }
+
+        nav {
+            display: flex;
+            gap: 24px;
+            align-items: center;
+        }
+
+        nav a {
+            color: var(--text-secondary);
+            text-decoration: none;
+            font-size: 0.95rem;
+            font-weight: 500;
+            transition: color 0.3s ease;
+        }
+
+        nav a:hover {
+            color: var(--text-primary);
+        }
+
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            padding: 12px 28px;
+            border-radius: 14px;
+            font-weight: 600;
+            text-decoration: none;
+            transition: all 0.3s cubic-bezier(0.165, 0.84, 0.44, 1);
+            cursor: pointer;
+            gap: 8px;
+            font-size: 0.95rem;
+        }
+
+        .btn-primary {
+            background: var(--gradient-primary);
+            color: white;
+            box-shadow: 0 4px 20px rgba(41, 121, 255, 0.25);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 30px rgba(41, 121, 255, 0.4);
+        }
+
+        .btn-secondary {
+            background: rgba(255, 255, 255, 0.04);
+            color: var(--text-primary);
+            border: 1px solid var(--border-color);
+        }
+
+        .btn-secondary:hover {
+            background: rgba(255, 255, 255, 0.08);
+            border-color: rgba(255, 255, 255, 0.15);
+            transform: translateY(-2px);
+        }
+
+        /* Hero Section */
+        .hero {
+            max-width: 1200px;
+            margin: 60px auto 100px;
+            padding: 24px;
+            text-align: center;
+            position: relative;
+        }
+
+        .hero-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid var(--border-color);
+            padding: 6px 16px;
+            border-radius: 30px;
+            margin-bottom: 24px;
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+        }
+
+        .hero-badge-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background-color: #00E676;
+            box-shadow: 0 0 10px #00E676;
+        }
+
+        .hero h1 {
+            font-family: 'Outfit', sans-serif;
+            font-size: 4rem;
+            font-weight: 800;
+            line-height: 1.15;
+            letter-spacing: -0.02em;
+            margin-bottom: 20px;
+            max-width: 900px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .hero h1 span {
+            background: linear-gradient(90deg, #2979FF, #D500F9);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .hero p {
+            color: var(--text-secondary);
+            font-size: 1.25rem;
+            max-width: 680px;
+            margin: 0 auto 40px;
+            font-weight: 300;
+        }
+
+        .hero-actions {
+            display: flex;
+            justify-content: center;
+            gap: 16px;
+            margin-bottom: 60px;
+        }
+
+        /* App Mockup Grid */
+        .features-grid {
+            max-width: 1200px;
+            margin: 80px auto;
+            padding: 24px;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+            gap: 24px;
+        }
+
+        .card {
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 24px;
+            padding: 32px;
+            transition: all 0.3s cubic-bezier(0.165, 0.84, 0.44, 1);
+            backdrop-filter: blur(16px);
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+            border-color: rgba(41, 121, 255, 0.25);
+            box-shadow: 0 12px 30px rgba(0, 0, 0, 0.3), 0 0 20px rgba(41, 121, 255, 0.05);
+        }
+
+        .card-icon {
+            width: 48px;
+            height: 48px;
+            border-radius: 14px;
+            background: rgba(41, 121, 255, 0.1);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--electric-blue);
+            font-size: 1.5rem;
+            border: 1px solid rgba(41, 121, 255, 0.2);
+        }
+
+        .card-icon.purple {
+            background: rgba(213, 0, 249, 0.1);
+            color: var(--neon-purple);
+            border-color: rgba(213, 0, 249, 0.2);
+        }
+
+        .card h3 {
+            font-family: 'Outfit', sans-serif;
+            font-size: 1.3rem;
+            font-weight: 700;
+        }
+
+        .card p {
+            color: var(--text-secondary);
+            font-size: 0.95rem;
+            font-weight: 400;
+            line-height: 1.6;
+        }
+
+        /* Pillars of Privacy Section */
+        .pillars {
+            max-width: 1200px;
+            margin: 100px auto;
+            padding: 60px 24px;
+            background: rgba(255, 255, 255, 0.01);
+            border-radius: 32px;
+            border: 1px solid var(--border-color);
+            text-align: center;
+        }
+
+        .pillars h2 {
+            font-family: 'Outfit', sans-serif;
+            font-size: 2.2rem;
+            font-weight: 800;
+            margin-bottom: 12px;
+        }
+
+        .pillars-desc {
+            color: var(--text-secondary);
+            max-width: 600px;
+            margin: 0 auto 50px;
+            font-weight: 300;
+        }
+
+        .pillars-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 32px;
+            text-align: left;
+            padding: 0 20px;
+        }
+
+        .pillar-item h4 {
+            font-family: 'Outfit', sans-serif;
+            font-size: 1.15rem;
+            font-weight: 700;
+            color: var(--text-primary);
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .pillar-item p {
+            color: var(--text-secondary);
+            font-size: 0.95rem;
+            line-height: 1.6;
+        }
+
+        /* Footer */
+        footer {
+            border-top: 1px solid var(--border-color);
+            padding: 60px 24px;
+            text-align: center;
+            background: #020202;
+        }
+
+        .footer-logo {
+            font-family: 'Outfit', sans-serif;
+            font-size: 1.3rem;
+            font-weight: 800;
+            background: var(--gradient-primary);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 24px;
+        }
+
+        .footer-links {
+            display: flex;
+            justify-content: center;
+            gap: 32px;
+            margin-bottom: 32px;
+        }
+
+        .footer-links a {
+            color: var(--text-secondary);
+            text-decoration: none;
+            font-size: 0.95rem;
+            transition: color 0.2s ease;
+        }
+
+        .footer-links a:hover {
+            color: var(--text-primary);
+        }
+
+        .copyright {
+            color: #404040;
+            font-size: 0.85rem;
+        }
+
+        @media (max-width: 768px) {
+            .hero h1 {
+                font-size: 2.8rem;
+            }
+            .hero-actions {
+                flex-direction: column;
+                max-width: 320px;
+                margin: 0 auto 40px;
+            }
+            .footer-links {
+                flex-direction: column;
+                gap: 16px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="blob blob-1"></div>
+    <div class="blob blob-2"></div>
+    <div class="blob blob-3"></div>
+
+    <header>
+        <div class="logo">
+            <span class="logo-symbol"></span>
+            PersonalAI Hub
+        </div>
+        <nav>
+            <a href="api_guide.html">API Setup</a>
+            <a href="legal.html">Privacy</a>
+            <a href="https://github.com/FarKode/PersonalAI-Hub" class="btn btn-secondary" style="padding: 8px 16px; border-radius: 10px;">GitHub</a>
+        </nav>
+    </header>
+
+    <section class="hero">
+        <div class="hero-badge">
+            <span class="hero-badge-dot"></span>
+            Android Client v1.0 POC Ready
+        </div>
+        <h1>Your Personal AI Suite.<br>Powered by <span>Your Own Keys</span>.</h1>
+        <p>A beautiful, premium Android interface offering powerful AI agents that run entirely on-device, storing all history, documents, and credentials locally.</p>
+        
+        <div class="hero-actions">
+            <a href="documind_ai/build/app/outputs/flutter-apk/app-release.apk" class="btn btn-primary">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
+                Download APK (66.5 MB)
+            </a>
+            <a href="https://github.com/FarKode/PersonalAI-Hub" class="btn btn-secondary">
+                View Source on GitHub
+            </a>
+        </div>
+    </section>
+
+    <div class="features-grid">
+        <div class="card">
+            <div class="card-icon">📄</div>
+            <h3>Document Mind</h3>
+            <p>Process PDF/TXT files locally using on-device RAG extraction. Chat, summarize, and query across multiple documents with exact page citations.</p>
+        </div>
+        <div class="card">
+            <div class="card-icon purple">✉️</div>
+            <h3>Email Crafter</h3>
+            <p>Generate highly professional email drafts, replies, and follow-ups instantly using curated prompt presets tailored to your context.</p>
+        </div>
+        <div class="card">
+            <div class="card-icon">💬</div>
+            <h3>Quick Chat</h3>
+            <p>Your primary, fast, general-purpose chatbot. Instant answers, coding assistance, and text manipulation at your fingertips.</p>
+        </div>
+        <div class="card">
+            <div class="card-icon purple">🌍</div>
+            <h3>Language Tutor</h3>
+            <p>Personalized language teacher. Translates, explains grammar, analyzes vocabulary, and guides you through conversations.</p>
+        </div>
+    </div>
+
+    <section class="pillars">
+        <h2>Built on Privacy and Customization</h2>
+        <p class="pillars-desc">Traditional AI apps collect your chat history, sell metrics, and lock you into monthly subscriptions. PersonalAI Hub does the opposite.</p>
+        
+        <div class="pillars-grid">
+            <div class="pillar-item">
+                <h4>🔒 On-Device Encryption</h4>
+                <p>Your API keys are encrypted using Android's native <strong>Keystore</strong> system and stored locally on your device. They are sent directly to the AI provider over HTTPS, never passing through any server controlled by us.</p>
+            </div>
+            <div class="pillar-item">
+                <h4>🚀 Bring Your Own Key (BYOK)</h4>
+                <p>Use your existing developer keys for Groq (FREE tier), Google Gemini (FREE tier), OpenAI, OpenRouter, or Anthropic. Pay only for what you query directly to the providers, avoiding $20/month subscription traps.</p>
+            </div>
+            <div class="pillar-item">
+                <h4>💾 High-Performance Database</h4>
+                <p>Using a native local <strong>ObjectBox</strong> database, all your document chunks, search vectors, and message histories remain safely on your smartphone storage. 100% private, 100% yours.</p>
+            </div>
+        </div>
+    </section>
+
+    <footer>
+        <div class="footer-logo">PersonalAI Hub</div>
+        <div class="footer-links">
+            <a href="api_guide.html">API Setup Guide</a>
+            <a href="legal.html">Privacy Policy &amp; Terms</a>
+            <a href="https://github.com/FarKode/PersonalAI-Hub">GitHub Repository</a>
+        </div>
+        <div class="copyright">
+            &copy; 2026 PersonalAI Hub. MIT Licensed.
+        </div>
+    </footer>
+
+</body>
+</html>

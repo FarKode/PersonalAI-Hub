@@ -168,12 +168,12 @@ class SettingsScreen extends ConsumerWidget {
             _buildSettingsTile(
               icon: Icons.menu_book_rounded,
               title: 'API Setup Guide',
-              onTap: () => _launchUrl('https://github.com/yourusername/documind-ai/blob/main/API_GUIDE.md'),
+              onTap: () => _launchUrl('https://farkode.github.io/PersonalAI-Hub/api_guide.html'),
             ),
             _buildSettingsTile(
               icon: Icons.privacy_tip_rounded,
               title: 'Privacy & Legal',
-              onTap: () => _launchUrl('https://github.com/yourusername/documind-ai/blob/main/LEGAL.md'),
+              onTap: () => _launchUrl('https://farkode.github.io/PersonalAI-Hub/legal.html'),
             ),
             _buildSettingsTile(
               icon: Icons.subscriptions_rounded,
