@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>PersonalAI Hub - Privacy-First BYOK AI Agent Suite</title>
+    <link rel="icon" type="image/png" href="documind_ai/assets/icon/app_icon.png">
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap');
         
@@ -70,12 +71,12 @@
         }
 
         .logo-symbol {
-            width: 28px;
-            height: 28px;
-            background: var(--gradient-primary);
+            width: 32px;
+            height: 32px;
             border-radius: 8px;
             display: inline-block;
             box-shadow: 0 0 15px rgba(41, 121, 255, 0.4);
+            object-fit: cover;
         }
 
         nav {
@@ -371,7 +372,7 @@
 
     <header>
         <div class="logo">
-            <span class="logo-symbol"></span>
+            <img src="documind_ai/assets/icon/app_icon.png" class="logo-symbol" alt="PersonalAI Hub Logo">
             PersonalAI Hub
         </div>
         <nav>
@@ -444,7 +445,10 @@
     </section>
 
     <footer>
-        <div class="footer-logo">PersonalAI Hub</div>
+        <div class="footer-logo" style="display: inline-flex; align-items: center; justify-content: center; gap: 10px; font-weight: 800; font-family: 'Outfit', sans-serif;">
+            <img src="documind_ai/assets/icon/app_icon.png" style="width: 28px; height: 28px; border-radius: 6px; box-shadow: 0 0 10px rgba(41, 121, 255, 0.3);" alt="Logo">
+            PersonalAI Hub
+        </div>
         <div class="footer-links">
             <a href="api_guide.html">API Setup Guide</a>
             <a href="legal.html">Privacy Policy &amp; Terms</a>
