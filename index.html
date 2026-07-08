@@ -167,12 +167,14 @@
         }
 
         #canvas3d {
-            width: 100%;
-            height: 100%;
-            outline: none;
-            position: absolute;
+            position: fixed;
             top: 0;
             left: 0;
+            width: 100vw;
+            height: 100vh;
+            outline: none;
+            z-index: -2;
+            pointer-events: none;
         }
 
         .hero-badge {
@@ -239,17 +241,17 @@
             border: 1px solid var(--border-color);
             border-radius: 24px;
             padding: 32px;
-            transition: all 0.3s cubic-bezier(0.165, 0.84, 0.44, 1);
+            transition: transform 0.15s cubic-bezier(0.25, 0.8, 0.25, 1), box-shadow 0.3s ease, border-color 0.3s ease;
             backdrop-filter: blur(16px);
             display: flex;
             flex-direction: column;
             gap: 16px;
+            transform-style: preserve-3d;
+            perspective: 1000px;
         }
 
         .card:hover {
-            transform: translateY(-5px);
-            border-color: rgba(41, 121, 255, 0.25);
-            box-shadow: 0 12px 30px rgba(0, 0, 0, 0.3), 0 0 20px rgba(41, 121, 255, 0.05);
+            border-color: rgba(41, 121, 255, 0.3);
         }
 
         .card-icon {
@@ -263,21 +265,25 @@
             color: var(--electric-blue);
             font-size: 1.5rem;
             border: 1px solid rgba(41, 121, 255, 0.2);
+            transition: transform 0.2s cubic-bezier(0.25, 0.8, 0.25, 1);
         }
 
         .card-icon.purple {
             background: rgba(213, 0, 249, 0.1);
             color: var(--neon-purple);
             border-color: rgba(213, 0, 249, 0.2);
+            transition: transform 0.2s cubic-bezier(0.25, 0.8, 0.25, 1);
         }
 
         .card h3 {
             font-family: 'Outfit', sans-serif;
             font-size: 1.3rem;
             font-weight: 700;
+            transition: transform 0.22s cubic-bezier(0.25, 0.8, 0.25, 1);
         }
 
         .card p {
+            transition: transform 0.25s cubic-bezier(0.25, 0.8, 0.25, 1);
             color: var(--text-secondary);
             font-size: 0.95rem;
             font-weight: 400;
@@ -404,6 +410,8 @@
 </head>
 <body>
 
+    <canvas id="canvas3d"></canvas>
+
     <div class="blob blob-1"></div>
     <div class="blob blob-2"></div>
     <div class="blob blob-3"></div>
@@ -440,7 +448,7 @@
             </div>
         </div>
         <div class="hero-visual">
-            <canvas id="canvas3d"></canvas>
+            <!-- Canvas is now full-screen background, this container is a placeholder for aligning the 3D Vault model -->
         </div>
     </section>
 
@@ -489,7 +497,7 @@
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
     <script>
-        // --- Three.js interactive 3D Privacy Vault Animation ---
+        // --- Three.js Full-Page Interactive 3D Background & Privacy Vault ---
         const container = document.querySelector('.hero-visual');
         const canvas = document.getElementById('canvas3d');
 
@@ -497,12 +505,12 @@
         const scene = new THREE.Scene();
         
         // Camera
-        const camera = new THREE.PerspectiveCamera(45, container.clientWidth / container.clientHeight, 0.1, 1000);
+        const camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.1, 1000);
         camera.position.z = 15;
 
         // Renderer
         const renderer = new THREE.WebGLRenderer({ canvas: canvas, alpha: true, antialias: true });
-        renderer.setSize(container.clientWidth, container.clientHeight);
+        renderer.setSize(window.innerWidth, window.innerHeight);
         renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
 
         // Group to hold all 3D vault components
@@ -510,19 +518,14 @@
         scene.add(vaultGroup);
 
         // 1. Central Core (Local Database / Private Vault)
-        // Made of a dense glowing particle sphere representing secure data nodes.
         const coreGeo = new THREE.SphereGeometry(1.8, 32, 32);
         const coreCount = coreGeo.attributes.position.count;
-        const corePositions = coreGeo.attributes.position.array;
-        
         const coreColors = new Float32Array(coreCount * 3);
         const colorElectricBlue = new THREE.Color('#2979FF');
         for(let i = 0; i < coreCount; i++) {
             colorElectricBlue.toArray(coreColors, i * 3);
         }
-
         coreGeo.setAttribute('color', new THREE.BufferAttribute(coreColors, 3));
-        
         const coreMat = new THREE.PointsMaterial({
             size: 0.08,
             vertexColors: true,
@@ -530,12 +533,10 @@
             opacity: 0.85,
             blending: THREE.AdditiveBlending
         });
-        
         const corePoints = new THREE.Points(coreGeo, coreMat);
         vaultGroup.add(corePoints);
 
         // 2. Encryption Shield (Outer Protective Wireframe)
-        // Represents the local firewall wrapping the data core.
         const shieldGeo = new THREE.SphereGeometry(3.2, 16, 16);
         const shieldMat = new THREE.MeshBasicMaterial({
             color: 0xD500F9, // Neon Purple
@@ -558,7 +559,6 @@
         vaultGroup.add(shieldPoints);
 
         // 3. Orbiting Agent Nodes (The 4 AI Agents)
-        // Orbit parameters: speed, radius, tilt angle, color
         const agents = [
             { name: 'Document Mind', radius: 4.5, speed: 0.007, angle: 0.2, color: 0x2979FF },
             { name: 'Email Crafter', radius: 5.2, speed: -0.005, angle: -0.4, color: 0xD500F9 },
@@ -567,10 +567,8 @@
         ];
 
         const agentMeshes = [];
-        const orbitLines = [];
-
         agents.forEach((agent) => {
-            // Orbital Path Line (Represents secure local data paths)
+            // Orbital Path Line
             const orbitGeo = new THREE.RingGeometry(agent.radius - 0.02, agent.radius + 0.02, 64);
             const orbitMat = new THREE.MeshBasicMaterial({
                 color: agent.color,
@@ -582,7 +580,6 @@
             orbit.rotation.x = Math.PI / 2 + agent.angle;
             orbit.rotation.y = agent.angle;
             vaultGroup.add(orbit);
-            orbitLines.push(orbit);
 
             // Agent Node (Satellite)
             const nodeGeo = new THREE.SphereGeometry(0.2, 16, 16);
@@ -604,7 +601,7 @@
                 side: THREE.DoubleSide
             });
             const glowMesh = new THREE.Mesh(glowGeo, glowMat);
-            nodeMesh.add(glowMesh); // Attach glow directly to node
+            nodeMesh.add(glowMesh);
 
             agentMeshes.push({
                 mesh: nodeMesh,
@@ -615,7 +612,7 @@
             });
         });
 
-        // 4. Secure Connection Lines (Connecting Agents back to the Private Core)
+        // 4. Secure Connection Lines (Connecting Agents back to Core)
         const lineMat = new THREE.LineBasicMaterial({
             color: 0x2979FF,
             transparent: true,
@@ -623,34 +620,85 @@
         });
 
         const lineGeometries = [];
-        const lines = [];
-
         agentMeshes.forEach(() => {
-            const points = [];
-            points.push(new THREE.Vector3(0, 0, 0));
-            points.push(new THREE.Vector3(0, 0, 0));
+            const points = [new THREE.Vector3(0, 0, 0), new THREE.Vector3(0, 0, 0)];
             const lineGeo = new THREE.BufferGeometry().setFromPoints(points);
             const line = new THREE.Line(lineGeo, lineMat);
             vaultGroup.add(line);
-            
             lineGeometries.push(lineGeo);
-            lines.push(line);
         });
 
-        // Ambient Light
+        // 5. Ambient Light
         const ambientLight = new THREE.AmbientLight(0xffffff, 0.2);
         scene.add(ambientLight);
 
-        // Interaction state
+        // 6. Global Background Stars (Floating Dust Constellation)
+        const starsGeo = new THREE.BufferGeometry();
+        const starsCount = 1200;
+        const starPositions = new Float32Array(starsCount * 3);
+        const starSpeeds = new Float32Array(starsCount);
+
+        for (let i = 0; i < starsCount * 3; i += 3) {
+            starPositions[i] = (Math.random() - 0.5) * 50;     // X
+            starPositions[i + 1] = (Math.random() - 0.5) * 50; // Y
+            starPositions[i + 2] = (Math.random() - 0.5) * 20 - 5; // Z
+            starSpeeds[i / 3] = 0.02 + Math.random() * 0.05;
+        }
+
+        starsGeo.setAttribute('position', new THREE.BufferAttribute(starPositions, 3));
+        const starsMat = new THREE.PointsMaterial({
+            color: 0x2979FF,
+            size: 0.05,
+            transparent: true,
+            opacity: 0.4,
+            blending: THREE.AdditiveBlending
+        });
+        const starsPoints = new THREE.Points(starsGeo, starsMat);
+        scene.add(starsPoints);
+
+        // Projecting screen placeholder into 3D Space Coordinates
+        function updateVaultPosition() {
+            if (!container) return;
+            const rect = container.getBoundingClientRect();
+            
+            // Map the screen center of the hero-visual placeholder into NDC
+            const ndcX = ((rect.left + rect.width / 2) / window.innerWidth) * 2 - 1;
+            const ndcY = -((rect.top + rect.height / 2) / window.innerHeight) * 2 + 1;
+
+            // Project coordinate back into 3D space
+            const vector = new THREE.Vector3(ndcX, ndcY, 0.5);
+            vector.unproject(camera);
+            const dir = vector.sub(camera.position).normalize();
+            const distance = -camera.position.z / dir.z;
+            const pos = camera.position.clone().add(dir.multiplyScalar(distance));
+
+            // Smoothly move the 3D Vault to line up with the layout placeholder
+            vaultGroup.position.copy(pos);
+
+            // Scale vaultGroup slightly on smaller viewports
+            const scale = Math.min(window.innerWidth / 1200, 1) * 0.9 + 0.1;
+            vaultGroup.scale.set(scale, scale, scale);
+        }
+
+        // Initialize vault position alignment
+        updateVaultPosition();
+
+        // Parallax Interaction State
         let targetX = 0;
         let targetY = 0;
         let currentX = 0;
         let currentY = 0;
 
         window.addEventListener('mousemove', (e) => {
-            // Normalize cursor coordinates: -0.5 to 0.5
             targetX = (e.clientX / window.innerWidth) - 0.5;
             targetY = (e.clientY / window.innerHeight) - 0.5;
+        });
+
+        // 3D Parallax camera panning on scroll
+        window.addEventListener('scroll', () => {
+            // Move camera on Y axis as user scrolls
+            camera.position.y = -window.scrollY * 0.012;
+            updateVaultPosition();
         });
 
         // Animation loop
@@ -673,34 +721,41 @@
             // Animate orbiting satellites (Agents) and update connection pathways
             agentMeshes.forEach((agent, index) => {
                 agent.angle += agent.speed;
-                
-                // Calculate position in orbit plane
                 const x = Math.cos(agent.angle) * agent.radius;
                 const z = Math.sin(agent.angle) * agent.radius;
-                
-                // Project position using orbit plane angles
                 const position = new THREE.Vector3(x, 0, z);
                 
-                // Apply rotation matching the orbital paths
                 position.applyAxisAngle(new THREE.Vector3(1, 0, 0), Math.PI / 2 + agent.angleOffset);
                 position.applyAxisAngle(new THREE.Vector3(0, 1, 0), agent.angleOffset);
 
                 agent.mesh.position.copy(position);
-
-                // Rotate the glow ring to face the camera
                 agent.mesh.children[0].lookAt(camera.position);
 
-                // Update connecting lines back to local secure core
                 const linePoints = [new THREE.Vector3(0, 0, 0), position];
                 lineGeometries[index].setFromPoints(linePoints);
             });
 
+            // Gentle background star drift
+            const starsPositionsAttr = starsGeo.attributes.position.array;
+            for(let i = 0; i < starsCount; i++) {
+                // Drift X-Y slightly
+                starsPositionsAttr[i * 3 + 1] -= starSpeeds[i] * 0.05;
+                if(starsPositionsAttr[i * 3 + 1] < -25) {
+                    starsPositionsAttr[i * 3 + 1] = 25;
+                }
+            }
+            starsGeo.attributes.position.needsUpdate = true;
+
             // Smooth parallax mouse movement
-            currentX += (targetX - currentX) * 0.08;
-            currentY += (targetY - currentY) * 0.08;
+            currentX += (targetX - currentX) * 0.05;
+            currentY += (targetY - currentY) * 0.05;
             
-            vaultGroup.rotation.y = currentX * 0.6;
-            vaultGroup.rotation.x = currentY * 0.6;
+            vaultGroup.rotation.y = currentX * 0.5;
+            vaultGroup.rotation.x = currentY * 0.5;
+
+            // Rotate background stars group in opposite direction for depth
+            starsPoints.rotation.y = -currentX * 0.15;
+            starsPoints.rotation.x = -currentY * 0.15;
 
             renderer.render(scene, camera);
         };
@@ -709,13 +764,46 @@
 
         // Responsive Resizing
         window.addEventListener('resize', () => {
-            const width = container.clientWidth;
-            const height = container.clientHeight;
-            
-            camera.aspect = width / height;
+            camera.aspect = window.innerWidth / window.innerHeight;
             camera.updateProjectionMatrix();
 
-            renderer.setSize(width, height);
+            renderer.setSize(window.innerWidth, window.innerHeight);
+            updateVaultPosition();
+        });
+
+        // --- Card 3D Tilt Hover Effect ---
+        document.querySelectorAll('.card').forEach(card => {
+            card.addEventListener('mousemove', (e) => {
+                const rect = card.getBoundingClientRect();
+                const x = e.clientX - rect.left;
+                const y = e.clientY - rect.top;
+                const xc = rect.width / 2;
+                const yc = rect.height / 2;
+                
+                // Tilt rotation values (-10 to 10 degrees)
+                const rotateX = (yc - y) / 10;
+                const rotateY = (x - xc) / 10;
+                
+                card.style.transform = `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) scale3d(1.02, 1.02, 1.02)`;
+                card.style.borderColor = 'rgba(41, 121, 255, 0.35)';
+                card.style.boxShadow = '0 20px 40px rgba(0, 0, 0, 0.4), 0 0 25px rgba(41, 121, 255, 0.1)';
+                
+                // Lift internal components in 3D perspective
+                card.querySelector('.card-icon').style.transform = 'translateZ(30px)';
+                card.querySelector('h3').style.transform = 'translateZ(20px)';
+                card.querySelector('p').style.transform = 'translateZ(10px)';
+            });
+            
+            card.addEventListener('mouseleave', () => {
+                card.style.transform = 'perspective(1000px) rotateX(0deg) rotateY(0deg) scale3d(1, 1, 1)';
+                card.style.borderColor = 'var(--border-color)';
+                card.style.boxShadow = 'none';
+                
+                // Reset internal components
+                card.querySelector('.card-icon').style.transform = 'translateZ(0px)';
+                card.querySelector('h3').style.transform = 'translateZ(0px)';
+                card.querySelector('p').style.transform = 'translateZ(0px)';
+            });
         });
 
     </script>
